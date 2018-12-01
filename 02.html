@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>入门</title>
+    <title>三维世界中的坐标</title>
     <script src="js/three.js"></script>
 </head>
 <body>
@@ -10,23 +10,36 @@
 <script>
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
-    var render = new THREE.WebGLRenderer();
+    var render = new THREE.WebGLRenderer({
+        antialias: true
+    });
+    var obj = new THREE.Object3D();
     render.setClearColor("#FFFFFF");
     render.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(render.domElement);
-    var geometry = new THREE.CubeGeometry(1,1,1);
+    var geometry = new THREE.CubeGeometry(1, 1, 1);
     var material = new THREE.MeshBasicMaterial({color: 0xFFB6C1});
     var cube = new THREE.Mesh(geometry, material);
-    scene.add(cube);
+    obj.add(cube);
+
+    var axesHelper = new THREE.AxesHelper(5);
+    obj.add(axesHelper);
+
+    scene.add(obj);
+
     camera.position.z = 5;
+    camera.position.x = 1;
+    camera.position.y = 1;
+    camera.lookAt(0, 0, 0);
 
     function showCube() {
         requestAnimationFrame(showCube)
-        cube.rotation.x += 0.01;
-        cube.rotation.y += 0.01;
-        cube.rotation.z += 0.01;
+        obj.rotation.x += 0.01;
+        obj.rotation.y += 0.01;
+        obj.rotation.z += 0.01;
         render.render(scene, camera);
     }
+
     showCube()
 
 </script>
