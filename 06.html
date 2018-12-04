@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>dat.GUI</title>
+    <script src="js/three.js"></script>
+    <script src="js/dat.gui.js"></script>
+</head>
+<body>
+
+<script>
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 200);
+    var render = new THREE.WebGLRenderer({
+        antialias: true
+    });
+    render.setClearColor("#FFFFFF");
+    render.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(render.domElement);
+
+    var axesHelper = new THREE.AxesHelper(5);
+    scene.add(axesHelper);
+
+    var sphereGeometry = new THREE.SphereGeometry(4, 20, 20);
+    var sphereMaterial = new THREE.MeshBasicMaterial({color: 0x7777ff, wireframe: true});
+    var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    sphere.position.y = 4;
+    sphere.position.x = 20;
+    sphere.position.z = 2;
+    scene.add(sphere);
+
+    var FizzyText = function () {
+        this.camerax = 0;
+        this.cameray = 0;
+        this.cameraz = 60;
+        this.camera_rotation = '[0, 1, 0]';
+    };
+
+    var params = new FizzyText();
+    var gui = new dat.GUI();
+    gui.add(params, 'camerax', 0, 60).name("camera.x").onChange(val => {
+        camera.position.x = val;
+    });
+    gui.add(params, 'cameray', 0, 60).name("camera.y").onChange(val => {
+        camera.position.y = val;
+    });
+    gui.add(params, 'cameraz', 30, 360).name("camera.z").onChange(val => {
+        camera.position.z = val;
+    });
+    gui.add(params, 'camera_rotation', {'不旋转': '[0, 1, 0]', '45度': '[1, 1, 0]', '90度': '[1, 0, 0]'}).onChange(val => {
+        var parse = JSON.parse(val);
+        camera.up.x = parse[0];
+        camera.up.y = parse[1];
+        camera.up.z = parse[2];
+    });
+
+    var step = 0;
+
+    camera.position.z = params.cameraz;
+
+    function show() {
+        step += 0.04;
+        camera.lookAt(0, 0, 0);
+        sphere.position.x = 20 + (10 * (Math.cos(step)));
+        sphere.position.y = 2 + (10 * (Math.abs(Math.sin(step))));
+        requestAnimationFrame(show)
+        render.render(scene, camera);
+    }
+
+    show()
+</script>
+</body>
+</html>
