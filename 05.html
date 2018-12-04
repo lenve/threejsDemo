@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>入门</title>
+    <title>弹弹球</title>
     <script src="js/three.js"></script>
 </head>
 <body>
@@ -10,24 +10,42 @@
 <script>
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
-    var render = new THREE.WebGLRenderer();
+    var render = new THREE.WebGLRenderer({
+        antialias: true
+    });
     render.setClearColor("#FFFFFF");
     render.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(render.domElement);
-    var geometry = new THREE.CubeGeometry(1,1,1);
-    var material = new THREE.MeshBasicMaterial({color: 0xFFB6C1});
-    var cube = new THREE.Mesh(geometry, material);
-    scene.add(cube);
-    camera.position.z = 5;
 
-    function showCube() {
-        requestAnimationFrame(showCube)
-        cube.rotation.x += 0.01;
-        cube.rotation.y += 0.01;
-        cube.rotation.z += 0.01;
+    var axesHelper = new THREE.AxesHelper(5);
+    scene.add(axesHelper);
+
+    var sphereGeometry = new THREE.SphereGeometry(4, 20, 20);
+    var sphereMaterial = new THREE.MeshBasicMaterial({color: 0x7777ff, wireframe: true});
+    var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    sphere.position.y = 4;
+    sphere.position.x = 20;
+    sphere.position.z = 2;
+    scene.add(sphere);
+
+    // camera.position.x = 60;
+    // camera.position.y = 30;
+    camera.position.z = 60;
+    camera.up.x = 1;
+    camera.up.y = 0;
+    camera.up.z = 0;
+    camera.lookAt(0, 0, 0);
+
+    var step = 0;
+    function show() {
+        step += 0.04;
+        sphere.position.x = 20 + (10 * (Math.cos(step)));
+        sphere.position.y = 2 + (10 * (Math.abs(Math.sin(step))));
+        requestAnimationFrame(show)
         render.render(scene, camera);
     }
-    showCube()
+
+    show()
 
 </script>
 </body>
